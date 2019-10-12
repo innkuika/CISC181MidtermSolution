@@ -254,9 +254,14 @@ public class LatinSquare {
 	 */
 	public boolean hasAllValues(int[] arr1, int[] arr2) {
 
-		// TODO: Return 'true' if every element from arr2 is in arr1
+		// TODO hasAllValues: Return 'true' if every element from arr2 is in arr1
+		HashSet<Integer> hset1 = new HashSet<>(Arrays.asList(Arrays.stream(arr1).boxed().toArray(Integer[]::new)));
+		HashSet<Integer> hset2 = new HashSet<>(Arrays.asList(Arrays.stream(arr2).boxed().toArray(Integer[]::new)));
+		boolean hasAllValues = false;
 
-		boolean hasAllValues = true;
+		hset2.removeAll(hset1);
+		if (hset2.size() == 0)
+			hasAllValues = true;
 
 		return hasAllValues;
 
