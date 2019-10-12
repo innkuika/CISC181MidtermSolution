@@ -1,10 +1,15 @@
 package pkgGame;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import pkgEnum.ePuzzleViolation;
+import pkgGame.PuzzleViolation;
 
 public class LatinSquare {
 
@@ -18,6 +23,7 @@ public class LatinSquare {
 
 	/**
 	 * bIgnoreZero - should I ignore zero when doing checks...?
+	 * 
 	 * @version 1.0
 	 * @since Midterm #1
 	 */
@@ -30,7 +36,7 @@ public class LatinSquare {
 	 * @since Midterm #1
 	 */
 	private ArrayList<PuzzleViolation> PV = new ArrayList<PuzzleViolation>();
-	
+
 	/**
 	 * No-arg constructor, make it public, don't do anything in the constructor
 	 * 
@@ -78,6 +84,7 @@ public class LatinSquare {
 
 	/**
 	 * Should the processing ignore zeros (hasDuplicates, etc)
+	 * 
 	 * @version 1.0
 	 * @since Midterm #1
 	 * @return
@@ -116,8 +123,13 @@ public class LatinSquare {
 	 */
 	public int[] getColumn(int iCol) {
 
-		// FIXME: Return a given column from LatinSquare
-		return null;
+		// FIXME getColumn: Return a given column from LatinSquare
+		int col[] = new int[LatinSquare[0].length];
+		for (int i = 0; i < LatinSquare[0].length; i++) {
+			col[i] = LatinSquare[i][iCol];
+		}
+
+		return col;
 	}
 
 	/**
@@ -136,9 +148,9 @@ public class LatinSquare {
 	 * @return one dimensional array of the given row
 	 */
 	public int[] getRow(int iRow) {
-		
-		// FIXME: Return a given row from LatinSquare
-		return null;
+
+		// FIXME getRow: Return a given row from LatinSquare
+		return LatinSquare[iRow];
 	}
 
 	/**
@@ -151,32 +163,45 @@ public class LatinSquare {
 	 */
 	public boolean hasDuplicates(int[] arr) {
 
-		// TODO: Return 'true' if any element has a duplicate.  
-		//		 If bIgnnoreZero is true, don't consider zeros when checking for duplicate
-		boolean hasDuplicates = false;		
+		// TODO hasDuplicates Return 'true' if any element has a duplicate.
+		// If bIgnnoreZero is true, don't consider zeros when checking for duplicate
+		int[] arrcp = arr.clone();
+		boolean hasDuplicates = false;
+		if (isbIgnoreZero())
+			RemoveZeros(arrcp);
+
+		// convert int[] to Integer[] then to hashset
+		HashSet<Integer> hashcp = new HashSet<>(Arrays.asList(Arrays.stream(arrcp).boxed().toArray(Integer[]::new)));
+
+		if (hashcp.size() != arrcp.length)
+			hasDuplicates = true;
+
 		return hasDuplicates;
 	}
 
 	/**
 	 * hasDuplicates - overloaded, checking the entire puzzle for a duplicate
+	 * 
 	 * @version 1.0
 	 * @since Midterm #1
 	 * @return Return 'true' if any element in column or row is duplicate
 	 */
 	protected boolean hasDuplicates() {
-		
-		//	Check if anything in the row is duplicate
+
+		// Check if anything in the row is duplicate
 		for (int i = 0; i < LatinSquare.length; i++) {
 			if (hasDuplicates(getRow(i)))
 				AddPuzzleViolation(new PuzzleViolation(ePuzzleViolation.DupRow, i));
 		}
 
-		//	TODO: Check if anything in the column is duplicate
-		//			If there's a duplicate in the column, call AddPuzzleViolation(pv)
+		// TODO hasDuplicates: Check if anything in the column is duplicate
+		// If there's a duplicate in the column, call AddPuzzleViolation(pv)
+		for (int i = 0; i < LatinSquare.length; i++) {
+			if (hasDuplicates(getColumn(i)))
+				AddPuzzleViolation(new PuzzleViolation(ePuzzleViolation.DupCol, i));
+		}
+		return PV.size() > 0;
 
-
-		//	FIXME: Return if PV.size > 0 then return true
-		return false;
 	}
 
 	/**
@@ -204,10 +229,16 @@ public class LatinSquare {
 	 * @return - return 'true' if iValue exists in arr
 	 */
 	public boolean doesElementExist(int[] arr, int iValue) {
-		
-		// FIXME: Return 'true' if iValue is found in arr
+
+		// FIXME doesElementExist: Return 'true' if iValue is found in arr
 
 		boolean doesElementExist = false;
+		for (int i : arr) {
+			if (i == iValue) {
+				doesElementExist = true;
+				break;
+			}
+		}
 		return doesElementExist;
 
 	}
@@ -222,7 +253,7 @@ public class LatinSquare {
 	 * @return return 'true' if every element from source array is in target array
 	 */
 	public boolean hasAllValues(int[] arr1, int[] arr2) {
-		
+
 		// TODO: Return 'true' if every element from arr2 is in arr1
 
 		boolean hasAllValues = true;
@@ -279,8 +310,15 @@ public class LatinSquare {
 	 * @return - returns 'true' if any element in the LatinSquare is a zero
 	 */
 	public boolean ContainsZero() {
-		//TODO: Return 'true' if any element in the puzzle contains a zero
-		return false;
+		// TODO ContainsZero: Return 'true' if any element in the puzzle contains a zero
+		boolean ContainsZero = false;
+		for (int[] i : LatinSquare)
+
+			if (doesElementExist(i, 0)) {
+				ContainsZero = true;
+				break;
+			}
+		return ContainsZero;
 
 	}
 
@@ -294,20 +332,18 @@ public class LatinSquare {
 	protected ArrayList<PuzzleViolation> getPV() {
 		return PV;
 	}
-	
+
 	/**
 	 * getPV - Get all puzzle violations by type
 	 * 
 	 * @version 1.0
 	 * @since Midterm #1
 	 * @param ePV - given puzzle violation type
-	 */	
-	protected ArrayList<PuzzleViolation> getPV(ePuzzleViolation ePV)
-	{
-		//FIXME: Return a list of the puzzle violations by type, null if none. 
+	 */
+	protected ArrayList<PuzzleViolation> getPV(ePuzzleViolation ePV) {
+		// FIXME: Return a list of the puzzle violations by type, null if none.
 		return null;
 	}
-	
 
 	/**
 	 * ClearPuzzleViolation - clear the collection of PuzzleViolations
@@ -329,6 +365,5 @@ public class LatinSquare {
 	protected void AddPuzzleViolation(PuzzleViolation pv) {
 		PV.add(pv);
 	}
-	
 
 }
