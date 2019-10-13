@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.apache.commons.lang.ArrayUtils;
 import pkgEnum.ePuzzleViolation;
 import pkgGame.PuzzleViolation;
 
-public class LatinSquare {
+public class LatinSquare implements iLatinSquare {
 
 	/**
 	 * LatinSquare - two dimensional array that's the core of the puzzle
@@ -346,8 +343,12 @@ public class LatinSquare {
 	 * @param ePV - given puzzle violation type
 	 */
 	protected ArrayList<PuzzleViolation> getPV(ePuzzleViolation ePV) {
-		// FIXME: Return a list of the puzzle violations by type, null if none.
-		return null;
+		// FIXME getPV: Return a list of the puzzle violations by type, null if none.
+		ArrayList<PuzzleViolation> varr = new ArrayList<PuzzleViolation>();
+		for(PuzzleViolation pv : PV) {
+			if(pv.getePuzzleViolation() == ePV)varr.add(pv);
+		}
+		return varr;
 	}
 
 	/**
@@ -369,6 +370,19 @@ public class LatinSquare {
 	 */
 	protected void AddPuzzleViolation(PuzzleViolation pv) {
 		PV.add(pv);
+	}
+
+	/**
+	 * isLatinSquare - test if the given two-dimensional array is a Latin square
+	 * 
+	 * @version 1.0
+	 * @since Midterm #1
+	 * @param LatinSquare 
+	 */
+	public static boolean isLatinSquare(int[][] LatinSquare) {
+		LatinSquare ls = new LatinSquare();
+		ls.setLatinSquare(LatinSquare.clone());
+		return ls.isLatinSquare();
 	}
 
 }
